@@ -8,11 +8,15 @@ const { getStore } = require('@netlify/blobs');
 const QPAY_BASE = 'https://merchant.qpay.mn/v2';
 
 function getRegistrationsStore() {
-  return getStore({
-    name: 'registrations',
-    siteID: process.env.NETLIFY_SITE_ID,
-    token: process.env.NETLIFY_BLOBS_TOKEN,
-  });
+  const siteID = process.env.NETLIFY_SITE_ID;
+  const token = process.env.NETLIFY_BLOBS_TOKEN;
+  if (!siteID || !token) {
+    const missing = [];
+    if (!siteID) missing.push('NETLIFY_SITE_ID');
+    if (!token) missing.push('NETLIFY_BLOBS_TOKEN');
+    throw new Error(`Netlify дээрх Environment variables-д дутуу байна: ${missing.join(', ')}. Site configuration → Environment variables хэсэгт нэмээд, дахин deploy хийнэ үү.`);
+  }
+  return getStore({ name: 'registrations', siteID, token });
 }
 
 async function safeJson(res, label) {

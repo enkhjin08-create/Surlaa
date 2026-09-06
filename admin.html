@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бүртгэл — Surlaa.today</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Caveat:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211a2b;
+    --ink-soft:#332943;
+    --paper:#f6efdf;
+    --paper-dim:#ece2cd;
+    --gold:#e3a23a;
+    --gold-deep:#c5811f;
+    --rose:#d9767a;
+    --sage:#7c9a82;
+    --disp:'Unbounded', sans-serif;
+    --hand:'Caveat', cursive;
+    --body:'Manrope', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family: var(--body);
+    background: var(--paper-dim);
+    color: var(--ink);
+    min-height:100vh;
+  }
+
+  /* ---------- gate ---------- */
+  .gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background: var(--ink);
+  }
+  .gate-card{
+    background: var(--paper); border-radius:18px; max-width:380px; width:100%;
+    padding:36px 30px; text-align:center; box-shadow: 0 30px 70px -25px rgba(0,0,0,.55);
+  }
+  .gate-card .eyebrow{ font-family: var(--hand); font-weight:700; font-size:1.3rem; color: var(--gold-deep); margin-bottom:8px; }
+  .gate-card h1{ font-family: var(--disp); font-weight:800; font-size:1.3rem; margin-bottom:18px; }
+  .gate-card input{
+    width:100%; text-align:center; font-family: var(--mono); font-size:1.05rem; padding:13px;
+    border-radius:10px; border:2px solid var(--paper-dim); margin-bottom:12px;
+  }
+  .gate-card input:focus{ outline:none; border-color: var(--gold); }
+  .btn{
+    font-family: var(--body); font-weight:800; font-size:.95rem; border:none; cursor:pointer;
+    padding:13px 20px; border-radius:9px; background: var(--gold); color: var(--ink);
+    box-shadow: 0 5px 0 var(--gold-deep); width:100%;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:active{ transform: translateY(2px); box-shadow:0 2px 0 var(--gold-deep); }
+  .gate-error{ color: var(--rose); font-size:.85rem; margin-top:10px; min-height:1.2em; font-weight:600; }
+
+  /* ---------- dashboard ---------- */
+  .dash{ display:none; max-width:980px; margin:0 auto; padding:30px 18px 60px; }
+  .dash.show{ display:block; }
+
+  .dash-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
+  .dash-head h1{ font-family: var(--disp); font-weight:800; font-size:1.4rem; }
+  .dash-head .brand{ font-family: var(--hand); font-weight:700; font-size:1.3rem; color: var(--gold-deep); }
+  .refresh-btn{
+    font-family: var(--mono); font-size:.78rem; background: var(--ink); color: var(--paper);
+    border:none; padding:9px 16px; border-radius:8px; cursor:pointer;
+  }
+  .refresh-btn:hover{ background: var(--ink-soft); }
+
+  .stats-row{ display:flex; gap:14px; margin-bottom:26px; flex-wrap:wrap; }
+  .stat-card{
+    background:#fff; border-radius:12px; padding:16px 20px; flex:1; min-width:130px;
+    box-shadow: 0 10px 26px -18px rgba(33,26,43,.35);
+  }
+  .stat-card .num{ font-family: var(--disp); font-weight:800; font-size:1.7rem; }
+  .stat-card .lbl{ font-family: var(--mono); font-size:.72rem; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  .stat-card.paid .num{ color: var(--sage); }
+  .stat-card.pending .num{ color: var(--gold-deep); }
+
+  .table-wrap{ background:#fff; border-radius:14px; overflow:hidden; box-shadow: 0 14px 34px -22px rgba(33,26,43,.4); }
+
+  /* ---------- schedule card ---------- */
+  .schedule-card{
+    background:#fff; border-radius:14px; padding:22px 24px; margin-bottom:26px;
+    box-shadow: 0 14px 34px -22px rgba(33,26,43,.4);
+  }
+  .schedule-card h2{ font-family: var(--disp); font-weight:800; font-size:1.1rem; margin-bottom:6px; }
+  .schedule-card .current{
+    font-family: var(--mono); font-size:.82rem; color: var(--ink-soft); margin-bottom:16px;
+  }
+  .schedule-card .current strong{ color: var(--ink); }
+  .schedule-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px; }
+  .schedule-grid .full{ grid-column: 1 / -1; }
+  .schedule-field label{
+    display:block; font-family: var(--mono); font-size:.7rem; text-transform:uppercase;
+    letter-spacing:.03em; color: var(--ink-soft); margin-bottom:6px;
+  }
+  .schedule-field input{
+    width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--paper-dim);
+    font-family: var(--body); font-size:.9rem; color: var(--ink);
+  }
+  .schedule-field input:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+  .schedule-save-btn{
+    font-family: var(--body); font-weight:800; font-size:.88rem; background: var(--gold);
+    color: var(--ink); border:none; padding:11px 22px; border-radius:9px; cursor:pointer;
+  }
+  .schedule-save-btn:hover{ background:#eeb15c; }
+  .schedule-save-btn:disabled{ opacity:.6; cursor:default; }
+  .schedule-msg{ font-size:.82rem; margin-top:10px; min-height:1.2em; }
+  .schedule-msg.ok{ color: var(--sage); font-weight:600; }
+  .schedule-msg.err{ color: var(--rose); font-weight:600; }
+
+  @media (max-width:520px){
+    .schedule-grid{ grid-template-columns: 1fr; }
+  }
+  table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+  thead th{
+    background: var(--ink); color: var(--paper); text-align:left; padding:12px 14px;
+    font-family: var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap;
+  }
+  tbody td{ padding:12px 14px; border-bottom:1px solid var(--paper-dim); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background: var(--paper); }
+  .cell-name{ font-weight:700; }
+  .cell-sub{ font-family: var(--mono); font-size:.76rem; color: var(--ink-soft); }
+  .badge{
+    display:inline-block; padding:4px 10px; border-radius:999px; font-family: var(--mono);
+    font-size:.7rem; font-weight:600; white-space:nowrap;
+  }
+  .badge.paid{ background:#DCE9DE; color:#3f5b45; }
+  .badge.pending{ background:#F5E3C6; color:#7a5417; }
+
+  .empty-state{ text-align:center; padding:60px 20px; color: var(--ink-soft); }
+  .empty-state .big{ font-size:2.4rem; margin-bottom:10px; }
+
+  .error-banner{
+    background:#F0D5D6; color: var(--ink); border-radius:10px; padding:14px 16px;
+    margin-bottom:20px; font-size:.9rem; display:none;
+  }
+  .error-banner.show{ display:block; }
+
+  .loading-row{ text-align:center; padding:50px 20px; color: var(--ink-soft); }
+  .spinner{
+    width:32px; height:32px; margin:0 auto 14px; border:4px solid var(--paper-dim);
+    border-top-color: var(--gold); border-radius:50%; animation: spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  @media (max-width:640px){
+    table{ font-size:.78rem; }
+    thead th, tbody td{ padding:9px 8px; }
+    .table-wrap{ overflow-x:auto; }
+    table{ min-width:640px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- PIN GATE -->
+  <div class="gate" id="gateView">
+    <div class="gate-card">
+      <span class="eyebrow">Surlaa.today</span>
+      <h1>Бүртгэлийн самбар</h1>
+      <form id="gateForm" novalidate>
+        <input type="password" id="keyInput" inputmode="text" autocomplete="off" placeholder="Admin түлхүүр">
+        <button type="submit" class="btn">Нэвтрэх</button>
+      </form>
+      <div class="gate-error" id="gateError"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dash" id="dashView">
+    <div class="dash-head">
+      <div>
+        <span class="brand">Сурлаа.today</span>
+        <h1>Бүртгүүлсэн хүмүүс</h1>
+      </div>
+      <button class="refresh-btn" id="refreshBtn">↻ Шинэчлэх</button>
+    </div>
+
+    <div class="error-banner" id="dashError"></div>
+
+    <div class="schedule-card">
+      <h2>Дараагийн сургалт товлох</h2>
+      <div class="current" id="currentSessionText">Одоогоор товлоогүй байна.</div>
+      <form id="scheduleForm">
+        <div class="schedule-grid">
+          <div class="schedule-field">
+            <label for="sessDate">Огноо</label>
+            <input type="date" id="sessDate" required>
+          </div>
+          <div class="schedule-field">
+            <label for="sessTime">Цаг</label>
+            <input type="time" id="sessTime" value="10:00">
+          </div>
+          <div class="schedule-field full">
+            <label for="sessLocation">Байршил</label>
+            <input type="text" id="sessLocation" placeholder="жишээ нь: Bean Tree Coffee Shop" required>
+          </div>
+        </div>
+        <button type="submit" class="schedule-save-btn" id="scheduleSaveBtn">Хадгалах</button>
+        <div class="schedule-msg" id="scheduleMsg"></div>
+      </form>
+    </div>
+
+    <div class="stats-row" id="statsRow" style="display:none;">
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Нийт бүртгэл</div>
+      </div>
+      <div class="stat-card paid">
+        <div class="num" id="statPaid">0</div>
+        <div class="lbl">Төлсөн</div>
+      </div>
+      <div class="stat-card pending">
+        <div class="num" id="statPending">0</div>
+        <div class="lbl">Хүлээгдэж буй</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div id="loadingBox" class="loading-row">
+        <div class="spinner"></div>
+        Ачааллаж байна…
+      </div>
+      <table id="regTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Огноо</th>
+            <th>Нэр</th>
+            <th>Утас / Имэйл</th>
+            <th>Зорилго</th>
+            <th>Бизнес</th>
+            <th>Төлбөр</th>
+          </tr>
+        </thead>
+        <tbody id="regTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="big">📭</div>
+        Одоогоор бүртгэл алга байна.
+      </div>
+    </div>
+  </div>
+
+<script>
+  var gateView = document.getElementById('gateView');
+  var dashView = document.getElementById('dashView');
+  var gateForm = document.getElementById('gateForm');
+  var keyInput = document.getElementById('keyInput');
+  var gateError = document.getElementById('gateError');
+  var dashError = document.getElementById('dashError');
+  var loadingBox = document.getElementById('loadingBox');
+  var regTable = document.getElementById('regTable');
+  var regTableBody = document.getElementById('regTableBody');
+  var emptyState = document.getElementById('emptyState');
+  var statsRow = document.getElementById('statsRow');
+  var refreshBtn = document.getElementById('refreshBtn');
+
+  function fmtDate(iso){
+    if(!iso) return '—';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('mn-MN') + ' ' + d.toLocaleTimeString('mn-MN', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  function renderRegistrations(data){
+    var regs = data.registrations || [];
+    statsRow.style.display = 'flex';
+    document.getElementById('statTotal').textContent = data.count || regs.length;
+    var paidCount = regs.filter(function(r){ return r.status === 'paid'; }).length;
+    document.getElementById('statPaid').textContent = paidCount;
+    document.getElementById('statPending').textContent = regs.length - paidCount;
+
+    loadingBox.style.display = 'none';
+
+    if (regs.length === 0) {
+      emptyState.style.display = 'block';
+      regTable.style.display = 'none';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+    regTable.style.display = 'table';
+    regTableBody.innerHTML = regs.map(function(r){
+      var isPaid = r.status === 'paid';
+      var badge = isPaid
+        ? '<span class="badge paid">✓ Төлсөн</span>'
+        : '<span class="badge pending">Хүлээгдэж буй</span>';
+      return '<tr>' +
+        '<td class="cell-sub">' + escapeHtml(fmtDate(r.created_at)) + '</td>' +
+        '<td class="cell-name">' + escapeHtml(r.name) + '</td>' +
+        '<td><div>' + escapeHtml(r.phone) + '</div><div class="cell-sub">' + escapeHtml(r.email) + '</div></td>' +
+        '<td>' + escapeHtml(r.goal) + '</td>' +
+        '<td>' + escapeHtml(r.business || '—') + '</td>' +
+        '<td>' + badge + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function loadRegistrations(key){
+    loadingBox.style.display = 'block';
+    regTable.style.display = 'none';
+    emptyState.style.display = 'none';
+    dashError.classList.remove('show');
+
+    fetch('/.netlify/functions/qpay-list-registrations?key=' + encodeURIComponent(key))
+      .then(function(res){
+        if (res.status === 401) {
+          throw new Error('unauthorized');
+        }
+        if (!res.ok) {
+          throw new Error('server');
+        }
+        return res.json();
+      })
+      .then(function(data){
+        renderRegistrations(data);
+      })
+      .catch(function(err){
+        loadingBox.style.display = 'none';
+        if (err.message === 'unauthorized') {
+          sessionStorage.removeItem('adminKey');
+          gateView.style.display = 'flex';
+          dashView.classList.remove('show');
+          gateError.textContent = 'Түлхүүр буруу байна.';
+        } else {
+          dashError.textContent = 'Мэдээлэл татахад алдаа гарлаа. Дахин "Шинэчлэх" дарж үзнэ үү.';
+          dashError.classList.add('show');
+        }
+      });
+  }
+
+  function unlock(key){
+    sessionStorage.setItem('adminKey', key);
+    gateView.style.display = 'none';
+    dashView.classList.add('show');
+    loadRegistrations(key);
+    loadCurrentSession();
+  }
+
+  gateForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var key = keyInput.value.trim();
+    if (!key) return;
+    gateError.textContent = '';
+    unlock(key);
+  });
+
+  // ---------- schedule next session ----------
+  var scheduleForm = document.getElementById('scheduleForm');
+  var sessDate = document.getElementById('sessDate');
+  var sessTime = document.getElementById('sessTime');
+  var sessLocation = document.getElementById('sessLocation');
+  var scheduleSaveBtn = document.getElementById('scheduleSaveBtn');
+  var scheduleMsg = document.getElementById('scheduleMsg');
+  var currentSessionText = document.getElementById('currentSessionText');
+
+  function fmtSessionDate(dateStr){
+    if (!dateStr) return '';
+    var parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    var d = new Date(parts[0], parts[1] - 1, parts[2]);
+    return d.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  }
+
+  function loadCurrentSession(){
+    fetch('/.netlify/functions/get-next-session')
+      .then(function(res){ return res.json(); })
+      .then(function(session){
+        if (session && session.date) {
+          currentSessionText.innerHTML = 'Одоогийн товлосон: <strong>' + fmtSessionDate(session.date) +
+            (session.time ? ', ' + session.time + ' цагаас' : '') +
+            ' · ' + escapeHtml(session.location) + '</strong>';
+          sessDate.value = session.date;
+          sessTime.value = session.time || '10:00';
+          sessLocation.value = session.location;
+        } else {
+          currentSessionText.textContent = 'Одоогоор товлоогүй байна.';
+        }
+      })
+      .catch(function(){ /* leave default text */ });
+  }
+
+  scheduleForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var key = sessionStorage.getItem('adminKey');
+    if (!key) return;
+
+    var date = sessDate.value;
+    var time = sessTime.value;
+    var location = sessLocation.value.trim();
+    if (!date || !location) return;
+
+    scheduleSaveBtn.disabled = true;
+    scheduleSaveBtn.textContent = 'Хадгалж байна…';
+    scheduleMsg.textContent = '';
+    scheduleMsg.className = 'schedule-msg';
+
+    fetch('/.netlify/functions/set-next-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: key, date: date, time: time, location: location }),
+    })
+      .then(function(res){
+        if (!res.ok) throw new Error('save failed');
+        return res.json();
+      })
+      .then(function(session){
+        currentSessionText.innerHTML = 'Одоогийн товлосон: <strong>' + fmtSessionDate(session.date) +
+          (session.time ? ', ' + session.time + ' цагаас' : '') +
+          ' · ' + escapeHtml(session.location) + '</strong>';
+        scheduleMsg.textContent = 'Амжилттай хадгалагдлаа ✓';
+        scheduleMsg.classList.add('ok');
+      })
+      .catch(function(){
+        scheduleMsg.textContent = 'Хадгалахад алдаа гарлаа, дахин оролдоно уу.';
+        scheduleMsg.classList.add('err');
+      })
+      .finally(function(){
+        scheduleSaveBtn.disabled = false;
+        scheduleSaveBtn.textContent = 'Хадгалах';
+      });
+  });
+
+  refreshBtn.addEventListener('click', function(){
+    var key = sessionStorage.getItem('adminKey');
+    if (key) loadRegistrations(key);
+  });
+
+  // auto-unlock if key already stored this session
+  (function(){
+    var saved = sessionStorage.getItem('adminKey');
+    if (saved) unlock(saved);
+  })();
+</script>
+
+</body>
+</html>
