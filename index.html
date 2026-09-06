@@ -1032,6 +1032,12 @@
             <input type="email" id="regEmail" name="email" autocomplete="email" required>
           </div>
           <div class="field">
+            <label for="regSession">Аль өдөр ирэх вэ?</label>
+            <select id="regSession" name="session_label" required>
+              <option value="">Ачааллаж байна…</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="regGoal">Ямар төрлийн вэб/апп хийх зорилготой байна вэ?</label>
             <select id="regGoal" name="goal">
               <option value="Бизнесийн вэб (зарах, таниулах)">Бизнесийн вэб (зарах, таниулах)</option>
@@ -1139,6 +1145,7 @@
     var nameInput = document.getElementById('regName');
     var phoneInput = document.getElementById('regPhone');
     var emailInput = document.getElementById('regEmail');
+    var sessionInput = document.getElementById('regSession');
     var goalInput = document.getElementById('regGoal');
     var greeting = document.getElementById('regGreeting');
     var noteVal = document.getElementById('bankNoteVal');
@@ -1155,12 +1162,42 @@
 
     var pollTimer = null;
 
+    function fmtSessionOptionDate(dateStr){
+      if (!dateStr) return '';
+      var parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      var d = new Date(parts[0], parts[1] - 1, parts[2]);
+      return d.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+    }
+
+    function loadSessionOptions(){
+      fetch('/.netlify/functions/get-sessions')
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          var sessions = (data.sessions || []).filter(function(s){
+            return new Date(s.date + 'T23:59:59') >= new Date();
+          });
+          if (sessions.length === 0) {
+            sessionInput.innerHTML = '<option value="">Тун удахгүй зарлагдана</option>';
+            return;
+          }
+          sessionInput.innerHTML = sessions.map(function(s){
+            var label = fmtSessionOptionDate(s.date) + (s.time ? ', ' + s.time : '') + ' · ' + s.location;
+            return '<option value="' + label.replace(/"/g, '&quot;') + '">' + label + '</option>';
+          }).join('');
+        })
+        .catch(function(){
+          sessionInput.innerHTML = '<option value="">Тодруулахын тулд холбогдоно уу</option>';
+        });
+    }
+
     window.openRegModal = function(){
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden', 'false');
       step1.style.display = '';
       step2.classList.remove('show');
       document.body.style.overflow = 'hidden';
+      loadSessionOptions();
       setTimeout(function(){ nameInput.focus(); }, 50);
     };
 
@@ -1220,9 +1257,10 @@
       var name = nameInput.value.trim();
       var phone = phoneInput.value.trim();
       var email = emailInput.value.trim();
+      var sessionLabel = sessionInput.value;
       var goal = goalInput.value;
       var business = document.getElementById('regNote').value.trim();
-      if(!name || !phone || !email){
+      if(!name || !phone || !email || !sessionLabel){
         errorEl.classList.add('show');
         return;
       }
@@ -1234,7 +1272,7 @@
       fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encodeForm({ 'form-name': 'registration', name: name, phone: phone, email: email, goal: goal, business: business })
+        body: encodeForm({ 'form-name': 'registration', name: name, phone: phone, email: email, session_label: sessionLabel, goal: goal, business: business })
       }).catch(function(){ /* ignore network errors on local preview */ });
 
       greeting.textContent = name + ' ээ, доорх QR кодыг QPay аппаараа уншуулж 500,000₮ төлнө үү.';
@@ -1249,7 +1287,7 @@
       fetch('/.netlify/functions/qpay-create-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, phone: phone, email: email, goal: goal, business: business })
+        body: JSON.stringify({ name: name, phone: phone, email: email, session_label: sessionLabel, goal: goal, business: business })
       })
         .then(function(res){
           if (!res.ok) throw new Error('invoice failed');
@@ -1292,20 +1330,26 @@
     }
   };
 
-  // dynamic next-session date (set by admin.html)
+  // dynamic next-session text (uses sessions added in admin.html)
   (function(){
     var el = document.getElementById('nextSessionText');
     if (!el) return;
-    fetch('/.netlify/functions/get-next-session')
+    fetch('/.netlify/functions/get-sessions')
       .then(function(res){ return res.json(); })
-      .then(function(session){
-        if (session && session.date) {
-          var parts = session.date.split('-');
-          var d = new Date(parts[0], parts[1] - 1, parts[2]);
-          var dateStr = d.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-          el.textContent = dateStr + (session.time ? ', ' + session.time + ' цагаас' : '') + ' · ' + session.location;
+      .then(function(data){
+        var sessions = (data.sessions || []).filter(function(s){
+          return new Date(s.date + 'T23:59:59') >= new Date();
+        });
+        if (sessions.length === 0) return; // keep static fallback text
+        var s = sessions[0];
+        var parts = s.date.split('-');
+        var d = new Date(parts[0], parts[1] - 1, parts[2]);
+        var dateStr = d.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        var text = dateStr + (s.time ? ', ' + s.time + ' цагаас' : '') + ' · ' + s.location;
+        if (sessions.length > 1) {
+          text += ' (нийт ' + sessions.length + ' өдөр сонголттой)';
         }
-        // if nothing set yet, keep the static fallback text already in the HTML
+        el.textContent = text;
       })
       .catch(function(){ /* keep static fallback text on any error */ });
   })();

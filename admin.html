@@ -86,11 +86,22 @@
     background:#fff; border-radius:14px; padding:22px 24px; margin-bottom:26px;
     box-shadow: 0 14px 34px -22px rgba(33,26,43,.4);
   }
-  .schedule-card h2{ font-family: var(--disp); font-weight:800; font-size:1.1rem; margin-bottom:6px; }
-  .schedule-card .current{
-    font-family: var(--mono); font-size:.82rem; color: var(--ink-soft); margin-bottom:16px;
+  .schedule-card h2{ font-family: var(--disp); font-weight:800; font-size:1.1rem; margin-bottom:14px; }
+
+  .session-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+  .session-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background: var(--paper); border-radius:9px; padding:10px 14px;
   }
-  .schedule-card .current strong{ color: var(--ink); }
+  .session-row .info{ font-size:.88rem; }
+  .session-row .info strong{ font-family: var(--mono); }
+  .session-row .del-btn{
+    font-family: var(--mono); font-size:.72rem; background:#F0D5D6; color: var(--ink);
+    border:none; padding:6px 12px; border-radius:6px; cursor:pointer; white-space:nowrap;
+  }
+  .session-row .del-btn:hover{ background:#e8bfc1; }
+  .session-empty{ font-size:.85rem; color: var(--ink-soft); margin-bottom:18px; }
+
   .schedule-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px; }
   .schedule-grid .full{ grid-column: 1 / -1; }
   .schedule-field label{
@@ -114,6 +125,7 @@
 
   @media (max-width:520px){
     .schedule-grid{ grid-template-columns: 1fr; }
+    .session-row{ flex-direction:column; align-items:flex-start; }
   }
   table{ width:100%; border-collapse:collapse; font-size:.86rem; }
   thead th{
@@ -184,8 +196,11 @@
     <div class="error-banner" id="dashError"></div>
 
     <div class="schedule-card">
-      <h2>Дараагийн сургалт товлох</h2>
-      <div class="current" id="currentSessionText">Одоогоор товлоогүй байна.</div>
+      <h2>Сургалтын өдрүүд</h2>
+
+      <div class="session-list" id="sessionList" style="display:none;"></div>
+      <div class="session-empty" id="sessionEmpty">Одоогоор нэмсэн өдөр алга байна.</div>
+
       <form id="scheduleForm">
         <div class="schedule-grid">
           <div class="schedule-field">
@@ -201,7 +216,7 @@
             <input type="text" id="sessLocation" placeholder="жишээ нь: Bean Tree Coffee Shop" required>
           </div>
         </div>
-        <button type="submit" class="schedule-save-btn" id="scheduleSaveBtn">Хадгалах</button>
+        <button type="submit" class="schedule-save-btn" id="scheduleSaveBtn">Өдөр нэмэх</button>
         <div class="schedule-msg" id="scheduleMsg"></div>
       </form>
     </div>
@@ -232,6 +247,7 @@
             <th>Огноо</th>
             <th>Нэр</th>
             <th>Утас / Имэйл</th>
+            <th>Сонгосон өдөр</th>
             <th>Зорилго</th>
             <th>Бизнес</th>
             <th>Төлбөр</th>
@@ -300,6 +316,7 @@
         '<td class="cell-sub">' + escapeHtml(fmtDate(r.created_at)) + '</td>' +
         '<td class="cell-name">' + escapeHtml(r.name) + '</td>' +
         '<td><div>' + escapeHtml(r.phone) + '</div><div class="cell-sub">' + escapeHtml(r.email) + '</div></td>' +
+        '<td>' + escapeHtml(r.session_label || '—') + '</td>' +
         '<td>' + escapeHtml(r.goal) + '</td>' +
         '<td>' + escapeHtml(r.business || '—') + '</td>' +
         '<td>' + badge + '</td>' +
@@ -345,7 +362,7 @@
     gateView.style.display = 'none';
     dashView.classList.add('show');
     loadRegistrations(key);
-    loadCurrentSession();
+    loadSessions();
   }
 
   gateForm.addEventListener('submit', function(e){
@@ -356,14 +373,15 @@
     unlock(key);
   });
 
-  // ---------- schedule next session ----------
+  // ---------- schedule sessions (multiple dates) ----------
   var scheduleForm = document.getElementById('scheduleForm');
   var sessDate = document.getElementById('sessDate');
   var sessTime = document.getElementById('sessTime');
   var sessLocation = document.getElementById('sessLocation');
   var scheduleSaveBtn = document.getElementById('scheduleSaveBtn');
   var scheduleMsg = document.getElementById('scheduleMsg');
-  var currentSessionText = document.getElementById('currentSessionText');
+  var sessionList = document.getElementById('sessionList');
+  var sessionEmpty = document.getElementById('sessionEmpty');
 
   function fmtSessionDate(dateStr){
     if (!dateStr) return '';
@@ -373,22 +391,48 @@
     return d.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   }
 
-  function loadCurrentSession(){
-    fetch('/.netlify/functions/get-next-session')
+  function renderSessions(sessions){
+    if (!sessions || sessions.length === 0) {
+      sessionList.style.display = 'none';
+      sessionEmpty.style.display = 'block';
+      return;
+    }
+    sessionEmpty.style.display = 'none';
+    sessionList.style.display = 'flex';
+    sessionList.innerHTML = sessions.map(function(s){
+      return '<div class="session-row">' +
+        '<span class="info"><strong>' + escapeHtml(fmtSessionDate(s.date)) + '</strong>' +
+        (s.time ? ', ' + escapeHtml(s.time) + ' цагаас' : '') +
+        ' · ' + escapeHtml(s.location) + '</span>' +
+        '<button type="button" class="del-btn" data-id="' + escapeHtml(s.id) + '">Устгах</button>' +
+      '</div>';
+    }).join('');
+
+    sessionList.querySelectorAll('.del-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        deleteSession(btn.dataset.id);
+      });
+    });
+  }
+
+  function loadSessions(){
+    fetch('/.netlify/functions/get-sessions')
       .then(function(res){ return res.json(); })
-      .then(function(session){
-        if (session && session.date) {
-          currentSessionText.innerHTML = 'Одоогийн товлосон: <strong>' + fmtSessionDate(session.date) +
-            (session.time ? ', ' + session.time + ' цагаас' : '') +
-            ' · ' + escapeHtml(session.location) + '</strong>';
-          sessDate.value = session.date;
-          sessTime.value = session.time || '10:00';
-          sessLocation.value = session.location;
-        } else {
-          currentSessionText.textContent = 'Одоогоор товлоогүй байна.';
-        }
-      })
-      .catch(function(){ /* leave default text */ });
+      .then(function(data){ renderSessions(data.sessions || []); })
+      .catch(function(){ /* leave empty-state text as is */ });
+  }
+
+  function deleteSession(id){
+    var key = sessionStorage.getItem('adminKey');
+    if (!key) return;
+    fetch('/.netlify/functions/delete-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: key, id: id }),
+    })
+      .then(function(res){ return res.json(); })
+      .then(function(data){ renderSessions(data.sessions || []); })
+      .catch(function(){ /* silently ignore; list stays as-is */ });
   }
 
   scheduleForm.addEventListener('submit', function(e){
@@ -402,11 +446,11 @@
     if (!date || !location) return;
 
     scheduleSaveBtn.disabled = true;
-    scheduleSaveBtn.textContent = 'Хадгалж байна…';
+    scheduleSaveBtn.textContent = 'Нэмж байна…';
     scheduleMsg.textContent = '';
     scheduleMsg.className = 'schedule-msg';
 
-    fetch('/.netlify/functions/set-next-session', {
+    fetch('/.netlify/functions/add-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key: key, date: date, time: time, location: location }),
@@ -415,11 +459,11 @@
         if (!res.ok) throw new Error('save failed');
         return res.json();
       })
-      .then(function(session){
-        currentSessionText.innerHTML = 'Одоогийн товлосон: <strong>' + fmtSessionDate(session.date) +
-          (session.time ? ', ' + session.time + ' цагаас' : '') +
-          ' · ' + escapeHtml(session.location) + '</strong>';
-        scheduleMsg.textContent = 'Амжилттай хадгалагдлаа ✓';
+      .then(function(data){
+        renderSessions(data.sessions || []);
+        scheduleForm.reset();
+        sessTime.value = '10:00';
+        scheduleMsg.textContent = 'Нэмэгдлээ ✓';
         scheduleMsg.classList.add('ok');
       })
       .catch(function(){
@@ -428,13 +472,13 @@
       })
       .finally(function(){
         scheduleSaveBtn.disabled = false;
-        scheduleSaveBtn.textContent = 'Хадгалах';
+        scheduleSaveBtn.textContent = 'Өдөр нэмэх';
       });
   });
 
   refreshBtn.addEventListener('click', function(){
     var key = sessionStorage.getItem('adminKey');
-    if (key) loadRegistrations(key);
+    if (key) { loadRegistrations(key); loadSessions(); }
   });
 
   // auto-unlock if key already stored this session
