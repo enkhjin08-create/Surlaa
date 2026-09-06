@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surlaa.today — 3 цагт өөрийн вэбтэй бол</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Caveat:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211a2b;
+    --ink-soft:#332943;
+    --paper:#f6efdf;
+    --paper-dim:#ece2cd;
+    --gold:#e3a23a;
+    --gold-deep:#c5811f;
+    --rose:#d9767a;
+    --sage:#7c9a82;
+    --disp: 'Unbounded', sans-serif;
+    --hand: 'Caveat', cursive;
+    --body: 'Manrope', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family: var(--body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img,svg{ display:block; max-width:100%; }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  .eyebrow{
+    font-family: var(--hand);
+    font-size:1.55rem;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px; height:2px;
+    background:currentColor;
+    display:inline-block;
+    opacity:.6;
+  }
+
+  .tag{
+    font-family: var(--mono);
+    font-size:.72rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:6px 12px;
+    border-radius:999px;
+    border:1px solid currentColor;
+    display:inline-block;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background: var(--ink);
+    color: var(--paper);
+    padding:88px 0 70px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image: radial-gradient(circle, rgba(246,239,223,.09) 1px, transparent 1px);
+    background-size:26px 26px;
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:1; }
+  .hero .eyebrow{ color: var(--gold); }
+
+  .hero h1{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size: clamp(2.1rem, 5.6vw, 3.7rem);
+    line-height:1.08;
+    letter-spacing:-.01em;
+    max-width:15ch;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color: var(--gold);
+  }
+
+  .hero p.lead{
+    margin-top:22px;
+    font-size:1.13rem;
+    max-width:52ch;
+    color: rgba(246,239,223,.86);
+  }
+
+  .cta-row{
+    margin-top:34px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:20px;
+  }
+
+  .btn{
+    font-family: var(--body);
+    font-weight:800;
+    font-size:1rem;
+    border:none;
+    cursor:pointer;
+    padding:16px 30px;
+    border-radius:10px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+  }
+  .btn-gold{
+    background: var(--gold);
+    color: var(--ink);
+    box-shadow: 0 6px 0 var(--gold-deep);
+    transition: transform .12s ease;
+  }
+  .btn-gold:hover{ transform: translateY(-2px); }
+  .btn-gold:active{ transform: translateY(2px); box-shadow:0 2px 0 var(--gold-deep); }
+
+  .cta-meta{
+    font-family: var(--mono);
+    font-size:.82rem;
+    color: rgba(246,239,223,.7);
+    line-height:1.5;
+  }
+
+  /* browser mockup */
+  .browser{
+    margin-top:56px;
+    background: var(--paper);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.55);
+    max-width:640px;
+  }
+  .browser-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 16px;
+    background: var(--paper-dim);
+  }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots span{
+    width:10px; height:10px; border-radius:50%;
+    background: rgba(33,26,43,.25);
+  }
+  .browser-url{
+    flex:1;
+    background: var(--paper);
+    border-radius:6px;
+    padding:6px 12px;
+    font-family: var(--mono);
+    font-size:.8rem;
+    color: var(--ink-soft);
+    white-space:nowrap;
+    overflow:hidden;
+  }
+  .browser-url .caret{
+    display:inline-block;
+    width:1px;
+    background: var(--rose);
+    margin-left:1px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .browser-body{
+    height:220px;
+    padding:20px;
+    display:grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap:14px;
+  }
+  .b-block{
+    background: var(--paper-dim);
+    border-radius:8px;
+    opacity:0;
+    transform: translateY(8px);
+    animation: riseIn .5s ease forwards;
+  }
+  .b-block.b1{ grid-row: 1 / 3; background: var(--rose); animation-delay:.3s; }
+  .b-block.b2{ animation-delay:.7s; }
+  .b-block.b3{ animation-delay:1.05s; background: var(--gold); }
+  @keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce){
+    .browser-url .caret{ animation:none; }
+    .b-block{ animation:none; opacity:1; transform:none; }
+  }
+
+  /* trust strip */
+  .trust{
+    background: var(--ink-soft);
+    padding:18px 0;
+  }
+  .trust .wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+  }
+  .trust .tag{ color: rgba(246,239,223,.75); border-color: rgba(246,239,223,.3); }
+
+  /* ---------- generic page section ---------- */
+  .page-section{
+    padding:84px 0;
+  }
+  .page-section.dark{
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .page-section.dark .eyebrow{ color: var(--gold); }
+  .page-section h2{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+    letter-spacing:-.01em;
+    max-width:20ch;
+    margin-bottom:18px;
+  }
+  .section-intro{
+    max-width:60ch;
+    font-size:1.05rem;
+    color: var(--ink-soft);
+    margin-bottom:48px;
+  }
+  .page-section.dark .section-intro{ color: rgba(246,239,223,.78); }
+
+  .reveal{
+    opacity:0;
+    transform: translateY(18px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ---------- portfolio ---------- */
+  .portfolio-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:26px;
+  }
+  @media (max-width:720px){ .portfolio-grid{ grid-template-columns:1fr; } }
+
+  .pf-card{
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow: 0 18px 40px -24px rgba(33,26,43,.4);
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .pf-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 22px 46px -20px rgba(33,26,43,.5);
+  }
+  .pf-bar{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px;
+    background: var(--paper-dim);
+  }
+  .pf-bar span.dot{ width:8px; height:8px; border-radius:50%; background:rgba(33,26,43,.25); }
+  .pf-bar .pf-url{
+    font-family: var(--mono);
+    font-size:.72rem;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding:3px 10px;
+    border-radius:5px;
+  }
+  .pf-preview{
+    height:130px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: var(--disp);
+    font-weight:800;
+    font-size:1.4rem;
+    color:#fff;
+  }
+  .pf-preview.p1{ background: linear-gradient(135deg,#d9767a,#c25a63); }
+  .pf-preview.p2{ background: linear-gradient(135deg,#332943,#211a2b); }
+  .pf-preview.p3{ background: linear-gradient(135deg,#e3a23a,#c5811f); }
+  .pf-preview.p4{ background: linear-gradient(135deg,#7c9a82,#5c7862); }
+  .pf-preview.p5{ background: linear-gradient(135deg,#8a6fb0,#5e4a80); }
+  .pf-preview.p6{ background: linear-gradient(135deg,#4a7c8c,#33566a); }
+
+  .pf-body{ padding:18px 20px 22px; }
+  .pf-body h3{ font-size:1.05rem; font-weight:800; margin-bottom:6px; }
+  .pf-body p{ font-size:.92rem; color: var(--ink-soft); margin-bottom:12px; }
+  .pf-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .pf-tags span{
+    font-family: var(--mono);
+    font-size:.68rem;
+    background: var(--paper-dim);
+    padding:3px 9px;
+    border-radius:5px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- about / stats ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap:50px;
+    align-items:start;
+  }
+  @media (max-width:760px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-grid p{ color: rgba(246,239,223,.82); font-size:1.02rem; margin-bottom:16px; max-width:56ch; }
+
+  .stat-list{ display:flex; flex-direction:column; gap:22px; }
+  .stat{ border-left:2px solid var(--gold); padding-left:16px; }
+  .stat .num{ font-family: var(--mono); font-weight:600; font-size:1.9rem; color: var(--gold); display:block; }
+  .stat .lbl{ font-size:.88rem; color: rgba(246,239,223,.72); }
+
+  /* ---------- timeline ---------- */
+  .timeline{ position:relative; padding-left:38px; }
+  .timeline::before{
+    content:"";
+    position:absolute; left:11px; top:6px; bottom:6px;
+    width:2px; background: var(--paper-dim);
+  }
+  .t-item{ position:relative; padding-bottom:34px; }
+  .t-item:last-child{ padding-bottom:0; }
+  .t-item::before{
+    content:attr(data-n);
+    position:absolute; left:-38px; top:0;
+    width:24px; height:24px;
+    border-radius:50%;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-weight:600;
+    font-size:.75rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .t-item h3{ font-size:1.05rem; font-weight:800; margin-bottom:4px; }
+  .t-item .t-time{ font-family: var(--mono); font-size:.76rem; color: var(--rose); margin-bottom:6px; display:inline-block; }
+  .t-item p{ color: var(--ink-soft); font-size:.94rem; max-width:52ch; }
+
+  /* ---------- price ---------- */
+  .price-card{
+    background: var(--paper);
+    color: var(--ink);
+    border-radius:16px;
+    padding:44px;
+    max-width:520px;
+    margin:0 auto;
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,.5);
+    transform: rotate(-.6deg);
+  }
+  .price-card .tag{ border-color: var(--ink-soft); color: var(--ink-soft); margin-bottom:18px; }
+  .price-num{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size:3rem;
+    letter-spacing:-.02em;
+  }
+  .price-num sup{ font-size:1rem; font-family: var(--mono); font-weight:500; margin-left:6px; color: var(--ink-soft); }
+  .price-list{ margin-top:24px; display:flex; flex-direction:column; gap:12px; }
+  .price-list li{ list-style:none; display:flex; gap:10px; font-size:.95rem; align-items:flex-start; }
+  .price-list li::before{
+    content:"✓";
+    color: var(--sage);
+    font-weight:800;
+    flex-shrink:0;
+  }
+  .price-card .btn-gold{ width:100%; justify-content:center; margin-top:28px; box-shadow:0 6px 0 var(--gold-deep); }
+
+  /* ---------- who for ---------- */
+  .who-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px;
+  }
+  @media (max-width:720px){ .who-grid{ grid-template-columns:1fr; } }
+  .who-card{ background:#fff; border-radius:12px; padding:26px 26px 22px; }
+  .who-card h3{ font-family:var(--hand); font-size:1.5rem; margin-bottom:14px; }
+  .who-card.yes h3{ color: var(--sage); }
+  .who-card.no h3{ color: var(--rose); }
+  .who-card ul{ padding-left:18px; }
+  .who-card li{ font-size:.94rem; color: var(--ink-soft); margin-bottom:8px; }
+
+  /* ---------- faq ---------- */
+  .faq-item{ padding:20px 0; border-bottom:1px solid var(--paper-dim); }
+  .faq-item h3{ font-size:1rem; font-weight:800; margin-bottom:6px; }
+  .faq-item p{ font-size:.94rem; color: var(--ink-soft); max-width:60ch; }
+
+  /* ---------- final cta ---------- */
+  .final{
+    background: var(--ink);
+    color: var(--paper);
+    padding:90px 0 60px;
+    text-align:center;
+  }
+  .final h2{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size: clamp(1.7rem, 4.4vw, 2.6rem);
+    max-width:18ch;
+    margin:0 auto 18px;
+  }
+  .final .eyebrow{ color: var(--gold); justify-content:center; }
+  .final p.lead{ color: rgba(246,239,223,.8); max-width:48ch; margin:0 auto 34px; }
+  .contact-list{
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:34px;
+  }
+  .contact-list .tag{ color: rgba(246,239,223,.85); border-color: rgba(246,239,223,.3); font-size:.78rem; padding:8px 14px; }
+
+  footer{
+    background: var(--ink);
+    color: rgba(246,239,223,.5);
+    text-align:center;
+    padding:26px 0 40px;
+    font-family: var(--mono);
+    font-size:.76rem;
+  }
+
+  ::selection{ background: var(--gold); color: var(--ink); }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background: rgba(33,26,43,.92);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid rgba(246,239,223,.08);
+  }
+  .nav-inner{
+    max-width:1080px;
+    margin:0 auto;
+    padding:14px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .nav-brand{
+    font-family: var(--hand);
+    font-weight:700;
+    font-size:1.35rem;
+    color: var(--paper);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-brand span{ color: var(--gold); }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap:26px;
+  }
+  .nav-links a{
+    font-family: var(--body);
+    font-size:.86rem;
+    font-weight:600;
+    color: rgba(246,239,223,.78);
+    text-decoration:none;
+  }
+  .nav-links a:hover{ color: var(--gold); }
+  .nav-cta{
+    font-family: var(--body);
+    font-weight:800;
+    font-size:.82rem;
+    background: var(--gold);
+    color: var(--ink);
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{ background:#eeb15c; }
+
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px;
+  }
+  .nav-toggle span{
+    width:22px; height:2px;
+    background: var(--paper);
+    display:block;
+  }
+
+  @media (max-width:760px){
+    .nav-links{
+      position:absolute;
+      top:100%; left:0; right:0;
+      background: var(--ink);
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      max-height:0;
+      overflow:hidden;
+      transition: max-height .25s ease;
+      border-bottom:1px solid rgba(246,239,223,.08);
+    }
+    .nav-links.open{ max-height:400px; }
+    .nav-links a{
+      width:100%;
+      padding:14px 28px;
+      border-top:1px solid rgba(246,239,223,.06);
+    }
+    .nav-links .nav-cta{ margin:14px 28px 18px; width:calc(100% - 56px); text-align:center; }
+    .nav-toggle{ display:flex; }
+  }
+
+  /* ---------- registration modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background: rgba(33,26,43,.72);
+    display:none;
+    align-items:center; justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-card{
+    background: var(--paper);
+    color: var(--ink);
+    border-radius:16px;
+    max-width:440px;
+    width:100%;
+    padding:34px 32px 30px;
+    position:relative;
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal-close{
+    position:absolute; top:16px; right:16px;
+    width:32px; height:32px;
+    border-radius:50%;
+    border:none;
+    background: var(--paper-dim);
+    color: var(--ink);
+    font-size:1.1rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-card .eyebrow{ font-size:1.3rem; margin-bottom:8px; }
+  .modal-card h3{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size:1.35rem;
+    margin-bottom:8px;
+  }
+  .modal-card p.modal-sub{ font-size:.92rem; color: var(--ink-soft); margin-bottom:22px; }
+
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-family: var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color: var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid var(--paper-dim);
+    background:#fff;
+    font-family: var(--body);
+    font-size:.95rem;
+    color: var(--ink);
+  }
+  .field input:focus, .field select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+
+  .modal-card .btn-gold{ width:100%; justify-content:center; margin-top:6px; }
+  .form-error{
+    font-size:.82rem;
+    color: var(--rose);
+    margin-top:-8px;
+    margin-bottom:14px;
+    display:none;
+  }
+  .form-error.show{ display:block; }
+
+  /* step 2: bank info */
+  .bank-step{ display:none; }
+  .bank-step.show{ display:block; }
+  .bank-box{
+    background:#fff;
+    border-radius:10px;
+    padding:18px 18px 16px;
+    margin:18px 0;
+  }
+  .bank-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid var(--paper-dim);
+    font-size:.92rem;
+  }
+  .bank-row:last-child{ border-bottom:none; }
+  .bank-row .b-label{ color: var(--ink-soft); }
+  .bank-row .b-val{ font-family: var(--mono); font-weight:600; }
+  #bankAccNum{ font-size:.82rem; word-break:break-all; text-align:right; }
+  .copy-btn{
+    font-family: var(--mono);
+    font-size:.7rem;
+    background: var(--paper-dim);
+    border:none;
+    border-radius:5px;
+    padding:4px 9px;
+    cursor:pointer;
+    margin-left:8px;
+  }
+  .copy-btn.copied{ background: var(--sage); color:#fff; }
+  .modal-note{
+    font-size:.86rem;
+    color: var(--ink-soft);
+    background: var(--paper-dim);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:18px;
+  }
+
+  /* qpay flow */
+  .qr-loading{ text-align:center; padding:30px 0; }
+  .qr-spinner{
+    width:38px; height:38px; margin:0 auto 16px;
+    border:4px solid var(--paper-dim);
+    border-top-color: var(--gold);
+    border-radius:50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .qr-box{ text-align:center; }
+  .qr-box img{ width:220px; height:220px; margin:0 auto 14px; border-radius:10px; border:1px solid var(--paper-dim); }
+  .qpay-open-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; text-decoration:none; margin-bottom:14px;
+  }
+  .waiting-row{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-family: var(--mono); font-size:.82rem; color: var(--ink-soft); margin-bottom:16px;
+  }
+  .waiting-dot{
+    width:8px; height:8px; border-radius:50%; background: var(--gold);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:.3; } 50%{ opacity:1; } }
+  .paid-box{ text-align:center; padding:10px 0; }
+  .paid-check{
+    width:56px; height:56px; border-radius:50%; background: var(--sage); color:#fff;
+    font-size:1.6rem; font-weight:800; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 16px;
+  }
+  .qpay-error{
+    background:#F0D5D6; border-radius:8px; padding:12px 14px; font-size:.86rem; color: var(--ink);
+    margin-bottom:16px; display:none;
+  }
+  .qpay-error.show{ display:block; }
+  .fallback-toggle{
+    display:block; text-align:center; font-family: var(--body); font-size:.82rem;
+    color: var(--ink-soft); text-decoration:underline; background:none; border:none; cursor:pointer;
+    margin-top:6px; width:100%;
+  }
+  .bank-fallback{ display:none; margin-top:16px; }
+  .bank-fallback.show{ display:block; }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="https://surlaa.today" class="nav-brand">Сур<span>лаа</span>.today</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Цэс">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="#portfolio">Портфолио</a>
+        <a href="#buteel">Суралцагчдын бүтээл</a>
+        <a href="#hutulbur">Хөтөлбөр</a>
+        <a href="#faq">Асуулт хариулт</a>
+        <button type="button" class="nav-cta" onclick="openRegModal()">Бүртгүүлэх</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <span class="eyebrow">3 цагийн дадлага семинар · Улаанбаатар</span>
+      <h1>Код мэдэхгүй ч, <em>ажил, амьдралаа хялбар</em> болгоё</h1>
+      <p class="lead">Зөвхөн худалдаа биш — өөрийн бизнес, ажил, хувийн хэрэгцээндээ зориулсан апп, вэбсайтыг 3 цагийн дотор өөрөө хийж сурна. Код бичихгүй, AI хамт ажиллана.</p>
+      <div class="cta-row">
+        <button type="button" class="btn btn-gold" onclick="openRegModal()">Бүртгүүлэх — 500,000₮</button>
+        <span class="cta-meta">5–8 хүний жижиг бүлэг<br>Лэптоп өөрөө авчрах</span>
+      </div>
+
+      <div class="browser" role="img" aria-label="Хоосон хаягаас амьд вэбсайт болж бүтэх демо">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url"><span id="typedUrl"></span><span class="caret" id="caret"> </span></div>
+        </div>
+        <div class="browser-body">
+          <div class="b-block b1"></div>
+          <div class="b-block b2"></div>
+          <div class="b-block b3"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trust">
+    <div class="wrap">
+      <span class="tag">Netlify</span>
+      <span class="tag">Firebase</span>
+      <span class="tag">AI (Gemini · Claude)</span>
+      <span class="tag">QPay</span>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO -->
+  <section class="page-section" id="portfolio">
+    <div class="wrap">
+      <span class="eyebrow">Миний хийсэн вэбүүд</span>
+      <h2 class="reveal">Онолоос биш, бодит хэрэгцээнээс сурна</h2>
+      <p class="section-intro reveal">Жишиг сургалт биш — өдөр бүр өөрийн бизнес, ажил, хувийн хэрэгцээндээ ашигладаг вэб, аппуудаа хийсэн туршлагаас л заана.</p>
+
+      <h3 style="font-family:var(--hand); font-size:1.4rem; color:var(--rose); margin-bottom:18px;">Бизнесийн вэб — зарж, таниулах зориулалттай</h3>
+      <div class="portfolio-grid" style="margin-bottom:48px;">
+        <a class="pf-card reveal" href="https://zuvhuntuund.com" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">zuvhuntuund.com</span></div>
+          <div class="pf-preview p1">ZuvkhunTuund</div>
+          <div class="pf-body">
+            <h3>ZuvkhunTuund</h3>
+            <p>Сэтгэл хөдлөлийн бэлэг, стационар, дижитал бүтээгдэхүүн. 8 алхамт бэлгийн хайрцаг зохион байгуулагч, QPay төлбөр, AI-аар зурсан хүүхдийн ном.</p>
+            <div class="pf-tags"><span>Захиалгын систем</span><span>Админ панел</span><span>AI</span></div>
+          </div>
+        </a>
+
+        <a class="pf-card reveal" href="https://meowie-quiz.netlify.app/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">meowie-quiz.netlify.app</span></div>
+          <div class="pf-preview p2">Meowie</div>
+          <div class="pf-body">
+            <h3>Meowie Giftshop</h3>
+            <p>Муур сэдэвт бэлгийн дэлгүүр, 2 салбар (Edupark, Орчлон). Каталог, зан чанар тодорхойлох тест, ажилчдын цаг бүртгэл, POS холболт.</p>
+            <div class="pf-tags"><span>Каталог</span><span>Quiz</span><span>Цаг бүртгэл</span></div>
+          </div>
+        </a>
+
+        <a class="pf-card reveal" href="https://mongol.tours" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">mongol.tours</span></div>
+          <div class="pf-preview p3">Mongol Tours</div>
+          <div class="pf-body">
+            <h3>Mongol Culture Park</h3>
+            <p>Тэрэлж дэх аяллын байгууллагад бүрэн вэбсайт. Динамик хуудсууд, бүрэн CRUD-той админ панел, өөрийн домайн.</p>
+            <div class="pf-tags"><span>Аялал</span><span>Админ панел</span><span>Домайн</span></div>
+          </div>
+        </a>
+
+        <a class="pf-card reveal" href="https://kidsbook.zuvhuntuund.com/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">kidsbook.zuvhuntuund.com</span></div>
+          <div class="pf-preview p5">Kids Book</div>
+          <div class="pf-body">
+            <h3>Хүүхдийн AI ном</h3>
+            <p>Хүүхдэд зориулсан хувийн шинж чанартай, AI-аар зурсан үлгэрийн ном үүсгэгч. Урьдчилан харах, усан тэмдэгтэй preview, захиалгын урсгал бүрэн автомат.</p>
+            <div class="pf-tags"><span>AI зураг</span><span>AI текст</span><span>Захиалга</span></div>
+          </div>
+        </a>
+      </div>
+
+      <h3 style="font-family:var(--hand); font-size:1.4rem; color:var(--sage); margin-bottom:18px;">Ажил, амьдралын хэрэгцээт апп — зарах биш, шийдэх зориулалттай</h3>
+      <div class="portfolio-grid">
+        <a class="pf-card reveal" href="https://zt-tsagburtgel.netlify.app/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">zt-tsagburtgel.netlify.app</span></div>
+          <div class="pf-preview p4">Цаг бүртгэл</div>
+          <div class="pf-body">
+            <h3>Ажилчдын цаг & цалин</h3>
+            <p>Meowie-ийн 5 хүний багт зориулсан дотоод систем. PIN-ээр нэвтрэх, тогтмол хуваарь, цагийн бүртгэл, автомат цалин тооцоолол, чөлөөний хүсэлт.</p>
+            <div class="pf-tags"><span>Firebase</span><span>PIN нэвтрэлт</span><span>Автомат тооцоо</span></div>
+          </div>
+        </a>
+
+        <a class="pf-card reveal" href="https://debttrackere.netlify.app/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">debttrackere.netlify.app</span></div>
+          <div class="pf-preview p6">Debt Tracker</div>
+          <div class="pf-body">
+            <h3>Өр зээлийн бүртгэл</h3>
+            <p>Сарын хуанли харагдацтай, PIN түгжээтэй, давтагдах төлбөрийн хуваарь бүхий хувийн санхүүгийн хяналтын систем.</p>
+            <div class="pf-tags"><span>React</span><span>PIN түгжээ</span><span>Firestore</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDENT WORK -->
+  <section class="page-section" id="buteel">
+    <div class="wrap">
+      <span class="eyebrow">Бахархаж байна</span>
+      <h2 class="reveal">Суралцагчдын бүтээл</h2>
+      <p class="section-intro reveal">Сургалтад суусан 2 оролцогчийн 3 цагийн дотор бүтээсэн анхны вэбсайт.</p>
+
+      <div class="portfolio-grid">
+        <a class="pf-card reveal" href="https://eotton.mn/#/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">eotton.mn</span></div>
+          <div class="pf-preview p1">eotton.mn</div>
+          <div class="pf-body">
+            <h3>eotton.mn</h3>
+            <p>Өнөөдрийн сургалтын оролцогчийн бүтээсэн анхны вэбсайт — 3 цагийн дадлагын үр дүн.</p>
+            <div class="pf-tags"><span>Суралцагчийн бүтээл</span></div>
+          </div>
+        </a>
+
+        <a class="pf-card reveal" href="https://werdbay.netlify.app/" target="_blank" rel="noopener">
+          <div class="pf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="pf-url">werdbay.netlify.app</span></div>
+          <div class="pf-preview p3">werdbay</div>
+          <div class="pf-body">
+            <h3>Werdbay</h3>
+            <p>Өнөөдрийн сургалтын оролцогчийн бүтээсэн анхны вэбсайт — 3 цагийн дадлагын үр дүн.</p>
+            <div class="pf-tags"><span>Суралцагчийн бүтээл</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="page-section dark">
+    <div class="wrap">
+      <span class="eyebrow">Хэн заах вэ</span>
+      <div class="about-grid">
+        <div>
+          <h2 class="reveal">Enkhjin — гурван брэнд, нэг хүн</h2>
+          <p class="reveal">Улаанбаатарт ZuvkhunTuund, Meowie Giftshop, CuteCups Mongolia гэсэн гурван брэндийг ганцаараа удирддаг. Код бичих, дизайн хийх, контент бэлдэх, бизнесээ өсгөх — бүгдийг өөрөө хийдэг.</p>
+          <p class="reveal">Энэ сургалт бол таны бизнест хэрэгтэй л зүйлийг заах, илүүдэл онолгүй, 3 цагийн дотор бодит үр дүнтэй гарах туршлага юм.</p>
+        </div>
+        <div class="stat-list">
+          <div class="stat reveal"><span class="num">3+</span><span class="lbl">идэвхтэй брэнд</span></div>
+          <div class="stat reveal"><span class="num">10+</span><span class="lbl">хийсэн веб апп, захиалгын систем</span></div>
+          <div class="stat reveal"><span class="num">5–8</span><span class="lbl">хүнтэй жижиг бүлэг тус бүрт</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="page-section" id="hutulbur">
+    <div class="wrap">
+      <span class="eyebrow">Өдрийн хөтөлбөр</span>
+      <h2 class="reveal">3–4 цагт юу болох вэ</h2>
+      <p class="section-intro reveal">Тав дахин ирж, нэг ч удаагийн явцаар — маргааш нь өөрийн вэбтэй болно.</p>
+
+      <div class="timeline">
+        <div class="t-item reveal" data-n="1">
+          <span class="t-time">30 мин</span>
+          <h3>Танилцуулга</h3>
+          <p>Яагаад Instagram дэлгүүрт вэбсайт хэрэгтэй вэ, өнөөдөр юу гарган авах вэ.</p>
+        </div>
+        <div class="t-item reveal" data-n="2">
+          <span class="t-time">45 мин</span>
+          <h3>Контент бэлтгэх</h3>
+          <p>Бизнесийнхээ нэр, тайлбар, зураг, холбоо барих мэдээллийг цэгцэлж, AI-аар сайжруулна.</p>
+        </div>
+        <div class="t-item reveal" data-n="3">
+          <span class="t-time">90 мин</span>
+          <h3>Вэбсайт үүсгэх</h3>
+          <p>Бэлэн загвар, AI зааврыг ашиглан өөрийн мэдээллээ оруулж, дизайнаа тохируулна.</p>
+        </div>
+        <div class="t-item reveal" data-n="4">
+          <span class="t-time">45–60 мин</span>
+          <h3>Нийтлэх</h3>
+          <p>Сайтаа шууд амьдралд гаргаж, дэлхий нийтэд харагдахуйц болгоно.</p>
+        </div>
+        <div class="t-item reveal" data-n="5">
+          <span class="t-time">15 мин</span>
+          <h3>Дараагийн алхам</h3>
+          <p>Цаашид өөрөө нэмж болох зүйл, тусламж авах сувгууд.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICE -->
+  <section class="page-section dark" id="burtgel">
+    <div class="wrap">
+      <span class="eyebrow">Хамрагдах</span>
+      <h2 class="reveal" style="text-align:center; margin:0 auto 40px;">Нэг өдөр. Нэг бодит вэбсайт.</h2>
+
+      <div class="price-card reveal">
+        <span class="tag">Нэг удаагийн семинар</span>
+        <div class="price-num">500,000<span style="font-family: var(--mono);">₮</span><sup>/хүн</sup></div>
+        <ul class="price-list">
+          <li>3–4 цагийн биечилсэн дадлага (5–8 хүний бүлэг)</li>
+          <li>Бэлэн загвар болон AI зааврын материал</li>
+          <li>Тухайн өдрөө амьдралд гарсан вэбсайт</li>
+          <li>1 сарын дотор чатаар тусламж</li>
+          <li>Дараагийн алхмын товч заавар</li>
+        </ul>
+        <button type="button" class="btn btn-gold" onclick="openRegModal()">Байраа баталгаажуулах</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO FOR -->
+  <section class="page-section">
+    <div class="wrap">
+      <span class="eyebrow">Танд тохирох уу</span>
+      <h2 class="reveal">Хэнд зориулагдсан бэ</h2>
+      <div class="who-grid">
+        <div class="who-card yes reveal">
+          <h3>Тохиромжтой</h3>
+          <ul>
+            <li>Instagram/Facebook дээр л бизнес хийдэг</li>
+            <li>Ажил, багийн дотоод хэрэгцээндээ жижиг систем хэрэгтэй</li>
+            <li>Хувийн санхүү, төлөвлөгөө, хичээл зэргээ хянах апп хийхийг хүсдэг</li>
+            <li>Код огт мэдэхгүй</li>
+            <li>Өөрийн вэбтэй болмоор атлаа хаанаас эхлэхээ мэдэхгүй</li>
+            <li>Практик дадлага хийж, тухайн өдрөө үр дүн авмаар байгаа</li>
+          </ul>
+        </div>
+        <div class="who-card no reveal">
+          <h3>Тохирохгүй</h3>
+          <ul>
+            <li>Аль хэдийн код мэддэг хөгжүүлэгч</li>
+            <li>Маш нарийн, тусгайлсан систем хэрэгтэй (энэ тохиолдолд тусад нь захиалгаар зөвлөгөө өгнө)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="page-section" id="faq">
+    <div class="wrap">
+      <span class="eyebrow">Асуулт хариулт</span>
+      <h2 class="reveal">Түгээмэл асуулт</h2>
+      <div>
+        <div class="faq-item reveal">
+          <h3>Компьютертэй байх шаардлагатай юу?</h3>
+          <p>Тийм, лэптоп өөрөө авчрах хэрэгтэй. Утсаар хийх боломжгүй.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3>Домайн заавал авах уу?</h3>
+          <p>Үгүй. Эхлээд үнэгүй дэд домайнтай гаргаад, дараа нь хүсвэл өөрийн домайн холбож болно.</p>
+        </div>
+        <div class="faq-item reveal">
+          <h3>Сургалтын дараа асуулт гарвал яах вэ?</h3>
+          <p>1 сарын дотор чатаар шууд асууж болно.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final" id="final-cta">
+    <div class="wrap">
+      <span class="eyebrow">Байраа баталгаажуулъя</span>
+      <h2>3 цагийн дараа өөрийн вэбтэй гарна</h2>
+      <p class="lead">Дараагийн бүлэг: 2026.08.13 (Пүрэв), 10:00 цагаас · Bean Tree Coffee Shop. 5–8 хүний жижиг бүлэг тул байрны тоо хязгаарлагдмал.</p>
+      <button type="button" class="btn btn-gold" onclick="openRegModal()">Бүртгүүлэх — 500,000₮</button>
+      <div class="contact-list">
+        <span class="tag">surlaa.today</span>
+        <span class="tag">Instagram: @surlaa.today</span>
+        <span class="tag">Утас: 90081808</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTRATION MODAL -->
+  <div class="modal-overlay" id="regModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="regModalTitle">
+      <button type="button" class="modal-close" onclick="closeRegModal()" aria-label="Хаах">✕</button>
+
+      <!-- step 1: form -->
+      <div id="regStep1">
+        <span class="eyebrow">Бүртгүүлэх</span>
+        <h3 id="regModalTitle">Байраа баталгаажуулъя</h3>
+        <p class="modal-sub">Мэдээллээ бөглөнө үү. Дараа нь төлбөр шилжүүлэх дансны мэдээлэл гарч ирнэ.</p>
+
+        <form id="regForm" name="registration" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="registration">
+          <p style="position:absolute; left:-9999px;" aria-hidden="true">
+            <label>Бүү бөглө: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+          </p>
+          <div class="field">
+            <label for="regName">Нэр</label>
+            <input type="text" id="regName" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="regPhone">Утасны дугаар</label>
+            <input type="tel" id="regPhone" name="phone" autocomplete="tel" inputmode="numeric" required>
+          </div>
+          <div class="field">
+            <label for="regEmail">Имэйл хаяг</label>
+            <input type="email" id="regEmail" name="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="regGoal">Ямар төрлийн вэб/апп хийх зорилготой байна вэ?</label>
+            <select id="regGoal" name="goal">
+              <option value="Бизнесийн вэб (зарах, таниулах)">Бизнесийн вэб (зарах, таниулах)</option>
+              <option value="Хувийн хэрэгцээт апп (ажил, амьдрал)">Хувийн хэрэгцээт апп (ажил, амьдрал)</option>
+              <option value="Мэдэхгүй, сонирхож үзье">Мэдэхгүй, сонирхож үзье</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="regNote">Бизнесийн нэр (заавал биш)</label>
+            <input type="text" id="regNote" name="business">
+          </div>
+          <div class="form-error" id="regError">Нэр, утас, имэйлээ бөглөнө үү.</div>
+          <button type="submit" class="btn btn-gold" id="regSubmitBtn">Үргэлжлүүлэх</button>
+        </form>
+      </div>
+
+      <!-- step 2: qpay payment -->
+      <div id="regStep2" class="bank-step">
+        <span class="eyebrow" id="regStep2Eyebrow">Баярлалаа!</span>
+        <h3 id="regStep2Title">Төлбөр төлөх</h3>
+        <p class="modal-sub" id="regGreeting">QPay-аар уншуулж 500,000₮ төлнө үү.</p>
+
+        <div class="qpay-error" id="qpayError">QPay холболтод алдаа гарлаа. Доорх дансаар шилжүүлж болно.</div>
+
+        <!-- loading state -->
+        <div class="qr-loading" id="qrLoading">
+          <div class="qr-spinner"></div>
+          <p style="font-size:.9rem; color:var(--ink-soft);">QPay нэхэмжлэл үүсгэж байна…</p>
+        </div>
+
+        <!-- qr display + polling -->
+        <div class="qr-box" id="qrBox" style="display:none;">
+          <img id="qrImage" src="" alt="QPay QR код">
+          <a id="qpayShortUrl" class="btn btn-gold qpay-open-btn" href="#" target="_blank" rel="noopener">📱 QPay аппаар нээх</a>
+          <div class="waiting-row"><span class="waiting-dot"></span> Төлбөр хүлээж байна…</div>
+        </div>
+
+        <!-- paid confirmation -->
+        <div class="paid-box" id="paidBox" style="display:none;">
+          <div class="paid-check">✓</div>
+          <p style="font-size:.95rem;">Төлбөр амжилттай хийгдлээ! Байр баталгаажлаа.</p>
+        </div>
+
+        <button type="button" class="fallback-toggle" id="fallbackToggle">Эсвэл дансаар шилжүүлэх</button>
+
+        <div class="bank-fallback" id="bankFallback">
+          <div class="bank-box">
+            <div class="bank-row">
+              <span class="b-label">Банк</span>
+              <span class="b-val">Хаан банк</span>
+            </div>
+            <div class="bank-row">
+              <span class="b-label">Дансны дугаар</span>
+              <span class="b-val" id="bankAccNum">MN490005005304653256<button type="button" class="copy-btn" id="copyBtn" onclick="copyAccNum()">Хуулах</button></span>
+            </div>
+            <div class="bank-row">
+              <span class="b-label">Хүлээн авагч</span>
+              <span class="b-val">Enkhjin</span>
+            </div>
+            <div class="bank-row">
+              <span class="b-label">Дүн</span>
+              <span class="b-val">500,000₮</span>
+            </div>
+            <div class="bank-row">
+              <span class="b-label">Гүйлгээний утга</span>
+              <span class="b-val" id="bankNoteVal">—</span>
+            </div>
+          </div>
+          <div class="modal-note">Шилжүүлгийн баримтаа Instagram (@surlaa.today) хаягаар илгээвэл байрыг баталгаажуулна.</div>
+        </div>
+
+        <button type="button" class="btn btn-gold" onclick="closeRegModal()" style="margin-top:14px;">Хаах</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>© Surlaa.today — ZuvkhunTuund · Meowie Giftshop · CuteCups Mongolia · <a href="materials.html" style="color:inherit;">Сургалтын материал</a></footer>
+
+<script>
+  // typing animation for hero URL
+  (function(){
+    var el = document.getElementById('typedUrl');
+    var caret = document.getElementById('caret');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var text = 'таны-бизнес.mn';
+    if(reduced){ el.textContent = text; if(caret) caret.style.display='none'; return; }
+    var i = 0;
+    function type(){
+      if(i <= text.length){
+        el.textContent = text.slice(0, i);
+        i++;
+        setTimeout(type, 90);
+      }
+    }
+    setTimeout(type, 500);
+  })();
+
+  // registration modal
+  (function(){
+    var overlay = document.getElementById('regModal');
+    var step1 = document.getElementById('regStep1');
+    var step2 = document.getElementById('regStep2');
+    var form = document.getElementById('regForm');
+    var errorEl = document.getElementById('regError');
+    var nameInput = document.getElementById('regName');
+    var phoneInput = document.getElementById('regPhone');
+    var emailInput = document.getElementById('regEmail');
+    var goalInput = document.getElementById('regGoal');
+    var greeting = document.getElementById('regGreeting');
+    var noteVal = document.getElementById('bankNoteVal');
+    var submitBtn = document.getElementById('regSubmitBtn');
+
+    var qrLoading = document.getElementById('qrLoading');
+    var qrBox = document.getElementById('qrBox');
+    var paidBox = document.getElementById('paidBox');
+    var qpayError = document.getElementById('qpayError');
+    var fallbackToggle = document.getElementById('fallbackToggle');
+    var bankFallback = document.getElementById('bankFallback');
+    var step2Eyebrow = document.getElementById('regStep2Eyebrow');
+    var step2Title = document.getElementById('regStep2Title');
+
+    var pollTimer = null;
+
+    window.openRegModal = function(){
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      step1.style.display = '';
+      step2.classList.remove('show');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function(){ nameInput.focus(); }, 50);
+    };
+
+    window.closeRegModal = function(){
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    };
+
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) closeRegModal();
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && overlay.classList.contains('open')) closeRegModal();
+    });
+
+    fallbackToggle.addEventListener('click', function(){
+      bankFallback.classList.toggle('show');
+      fallbackToggle.textContent = bankFallback.classList.contains('show') ? 'Дансны мэдээллийг нуух' : 'Эсвэл дансаар шилжүүлэх';
+    });
+
+    function encodeForm(data){
+      return Object.keys(data).map(function(k){
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
+      }).join('&');
+    }
+
+    function showQrError(){
+      qrLoading.style.display = 'none';
+      qrBox.style.display = 'none';
+      qpayError.classList.add('show');
+      bankFallback.classList.add('show');
+      fallbackToggle.textContent = 'Дансны мэдээллийг нуух';
+    }
+
+    function pollPayment(invoiceId){
+      pollTimer = setInterval(function(){
+        fetch('/.netlify/functions/qpay-check-payment?invoice_id=' + encodeURIComponent(invoiceId))
+          .then(function(res){ return res.json(); })
+          .then(function(data){
+            if (data.paid) {
+              clearInterval(pollTimer);
+              pollTimer = null;
+              qrBox.style.display = 'none';
+              paidBox.style.display = 'block';
+              step2Eyebrow.textContent = 'Баярлалаа!';
+              step2Title.textContent = 'Байр баталгаажлаа';
+            }
+          })
+          .catch(function(){ /* keep polling; transient network errors are fine */ });
+      }, 3000);
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = nameInput.value.trim();
+      var phone = phoneInput.value.trim();
+      var email = emailInput.value.trim();
+      var goal = goalInput.value;
+      var business = document.getElementById('regNote').value.trim();
+      if(!name || !phone || !email){
+        errorEl.classList.add('show');
+        return;
+      }
+      errorEl.classList.remove('show');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Уншиж байна…';
+
+      // log the registration to Netlify Forms (visible in Netlify dashboard)
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeForm({ 'form-name': 'registration', name: name, phone: phone, email: email, goal: goal, business: business })
+      }).catch(function(){ /* ignore network errors on local preview */ });
+
+      greeting.textContent = name + ' ээ, доорх QR кодыг QPay аппаараа уншуулж 500,000₮ төлнө үү.';
+      noteVal.textContent = name + ' / семинар';
+      step1.style.display = 'none';
+      step2.classList.add('show');
+      qrLoading.style.display = 'block';
+      qrBox.style.display = 'none';
+      paidBox.style.display = 'none';
+      qpayError.classList.remove('show');
+
+      fetch('/.netlify/functions/qpay-create-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, phone: phone, email: email, goal: goal, business: business })
+      })
+        .then(function(res){
+          if (!res.ok) throw new Error('invoice failed');
+          return res.json();
+        })
+        .then(function(data){
+          qrLoading.style.display = 'none';
+          qrBox.style.display = 'block';
+          document.getElementById('qrImage').src = 'data:image/png;base64,' + data.qr_image;
+          var shortUrlBtn = document.getElementById('qpayShortUrl');
+          if (data.qpay_shorturl) {
+            shortUrlBtn.href = data.qpay_shorturl;
+          } else {
+            shortUrlBtn.style.display = 'none';
+          }
+          pollPayment(data.invoice_id);
+        })
+        .catch(function(){
+          showQrError();
+        })
+        .finally(function(){
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Үргэлжлүүлэх';
+        });
+    });
+  })();
+
+  window.copyAccNum = function(){
+    var text = 'MN490005005304653256';
+    var btn = document.getElementById('copyBtn');
+    function done(){
+      btn.textContent = 'Хуулсан ✓';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = 'Хуулах'; btn.classList.remove('copied'); }, 1800);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      done();
+    }
+  };
+
+  // mobile nav toggle
+  (function(){
+    var toggle = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+    toggle.addEventListener('click', function(){
+      links.classList.toggle('open');
+    });
+    links.querySelectorAll('a, button').forEach(function(el){
+      el.addEventListener('click', function(){ links.classList.remove('open'); });
+    });
+  })();
+
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:.15 });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сургалтын материал — Surlaa.today</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Caveat:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211a2b;
+    --ink-soft:#332943;
+    --paper:#f6efdf;
+    --paper-dim:#ece2cd;
+    --gold:#e3a23a;
+    --gold-deep:#c5811f;
+    --rose:#d9767a;
+    --sage:#7c9a82;
+    --disp:'Unbounded', sans-serif;
+    --hand:'Caveat', cursive;
+    --body:'Manrope', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family: var(--body);
+    background: var(--ink);
+    color: var(--paper);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  body::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(246,239,223,.07) 1px, transparent 1px);
+    background-size:26px 26px;
+    pointer-events:none;
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius:18px;
+    max-width:420px;
+    width:100%;
+    padding:40px 34px;
+    box-shadow: 0 30px 70px -25px rgba(0,0,0,.55);
+    text-align:center;
+  }
+
+  .eyebrow{
+    font-family: var(--hand);
+    font-weight:700;
+    font-size:1.4rem;
+    color: var(--gold-deep);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family: var(--disp);
+    font-weight:800;
+    font-size:1.5rem;
+    margin-bottom:10px;
+    letter-spacing:-.01em;
+  }
+  p.sub{
+    font-size:.94rem;
+    color: var(--ink-soft);
+    margin-bottom:26px;
+    line-height:1.5;
+  }
+
+  #pinView input{
+    width:100%;
+    text-align:center;
+    letter-spacing:.35em;
+    font-family: var(--mono);
+    font-size:1.3rem;
+    padding:14px;
+    border-radius:10px;
+    border:2px solid var(--paper-dim);
+    background:#fff;
+    color: var(--ink);
+    margin-bottom:14px;
+  }
+  #pinView input:focus{ outline:none; border-color: var(--gold); }
+
+  .btn{
+    width:100%;
+    font-family: var(--body);
+    font-weight:800;
+    font-size:1rem;
+    border:none;
+    cursor:pointer;
+    padding:15px 20px;
+    border-radius:10px;
+    background: var(--gold);
+    color: var(--ink);
+    box-shadow: 0 6px 0 var(--gold-deep);
+    transition: transform .12s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); }
+  .btn:active{ transform: translateY(2px); box-shadow:0 2px 0 var(--gold-deep); }
+
+  .error{
+    color: var(--rose);
+    font-size:.85rem;
+    margin-top:12px;
+    min-height:1.2em;
+    font-weight:600;
+  }
+
+  #successView{ display:none; }
+  #successView .checkmark{
+    width:56px; height:56px;
+    border-radius:50%;
+    background: var(--sage);
+    color:#fff;
+    font-size:1.6rem;
+    font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 16px;
+  }
+  .dl-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    text-decoration:none;
+  }
+
+  .hint{
+    margin-top:20px;
+    font-family: var(--mono);
+    font-size:.72rem;
+    color: var(--ink-soft);
+    opacity:.7;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div id="pinView">
+      <span class="eyebrow">3 цагт өөрийн вэбтэй бол</span>
+      <h1>Сургалтын материал</h1>
+      <p class="sub">Энэ хуудас зөвхөн сургалтад суусан оролцогчдод зориулагдсан. Сургалтын үеэр өгсөн кодоо оруулна уу.</p>
+
+      <form id="pinForm" novalidate>
+        <input type="text" id="pinInput" inputmode="numeric" autocomplete="off" placeholder="••••••••" maxlength="12" aria-label="Код">
+        <button type="submit" class="btn">Нээх</button>
+      </form>
+      <div class="error" id="pinError"></div>
+    </div>
+
+    <div id="successView">
+      <div class="checkmark">✓</div>
+      <h1>Баярлалаа!</h1>
+      <p class="sub">Гарын авлагаа доорх товчоор татаж авна уу.</p>
+      <a class="btn dl-btn" id="downloadLink" href="orolcogchiin-gariin-avlaga.pdf" download>⬇ Гарын авлага татах (PDF)</a>
+    </div>
+
+    <div class="hint">surlaa.today · Enkhjin</div>
+  </div>
+
+<script>
+  // ---- change this code per workshop cohort ----
+  const ACCESS_CODE = "20260813";
+  // ------------------------------------------------
+
+  const pinView = document.getElementById('pinView');
+  const successView = document.getElementById('successView');
+  const form = document.getElementById('pinForm');
+  const input = document.getElementById('pinInput');
+  const errorEl = document.getElementById('pinError');
+
+  // remember unlock for this browser so returning visitors don't need to re-enter
+  if (sessionStorage.getItem('materialsUnlocked') === '1') {
+    pinView.style.display = 'none';
+    successView.style.display = 'block';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (val === ACCESS_CODE) {
+      errorEl.textContent = '';
+      pinView.style.display = 'none';
+      successView.style.display = 'block';
+      sessionStorage.setItem('materialsUnlocked', '1');
+    } else {
+      errorEl.textContent = 'Код буруу байна. Дахин шалгаад оруулна уу.';
+      input.value = '';
+      input.focus();
+    }
+  });
+</script>
+
+</body>
+</html>
