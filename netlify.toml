@@ -3,3 +3,22 @@
 
 [functions]
   node_bundler = "esbuild"
+
+# Template дэлгүүр (templates.surlaa.today) руу чиглүүлэх
+[[redirects]]
+  from = "/templates"
+  to = "https://templates.surlaa.today/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/templates/*"
+  to = "https://templates.surlaa.today/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/template"
+  to = "https://templates.surlaa.today/"
+  status = 301
+  force = true
