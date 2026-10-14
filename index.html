@@ -275,6 +275,24 @@
     .reveal{ opacity:1; transform:none; transition:none; }
   }
 
+  /* ---------- canva templates ---------- */
+  .tpl-grid{ display:grid; grid-template-columns: 1fr 1.15fr; gap:48px; align-items:center; }
+  .tpl-packs{ display:flex; flex-wrap:wrap; gap:10px; margin:0 0 30px; padding:0; list-style:none; }
+  .tpl-packs li{ font-weight:700; font-size:.92rem; padding:8px 14px; border-radius:999px; border:1.5px solid rgba(246,239,223,.25); }
+  .tpl-packs li b{ color:var(--gold); font-family:var(--mono); font-weight:600; margin-left:6px; }
+  .tpl-points{ margin:0 0 32px; padding:0; list-style:none; display:grid; gap:10px; color:rgba(246,239,223,.85); }
+  .tpl-points li::before{ content:'✓'; color:var(--gold); font-weight:800; margin-right:10px; }
+  .tpl-cta{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .tpl-cta .price{ font-family:var(--mono); font-size:.9rem; color:rgba(246,239,223,.7); }
+  .tpl-cta .price b{ font-family:var(--disp); font-size:1.25rem; color:var(--paper); margin-right:4px; }
+  .tpl-shots{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .tpl-shots img{ width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:14px; display:block; box-shadow:0 18px 40px -20px rgba(0,0,0,.7); }
+  .tpl-shots img:nth-child(3n+2){ transform:translateY(22px); }
+  @media (max-width:760px){
+    .tpl-grid{ grid-template-columns:1fr; gap:36px; }
+    .tpl-shots img:nth-child(3n+2){ transform:none; }
+  }
+
   /* ---------- portfolio ---------- */
   .portfolio-grid{
     display:grid;
@@ -725,6 +743,7 @@
         <a href="#portfolio">Портфолио</a>
         <a href="#buteel">Суралцагчдын бүтээл</a>
         <a href="#hutulbur">Хөтөлбөр</a>
+        <a href="#templates">Canva template</a>
         <a href="#faq">Асуулт хариулт</a>
         <button type="button" class="nav-cta" onclick="openRegModal()">Бүртгүүлэх</button>
       </div>
@@ -971,6 +990,44 @@
             <li>Аль хэдийн код мэддэг хөгжүүлэгч</li>
             <li>Маш нарийн, тусгайлсан систем хэрэгтэй (энэ тохиолдолд тусад нь захиалгаар зөвлөгөө өгнө)</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CANVA TEMPLATES -->
+  <section class="page-section dark" id="templates">
+    <div class="wrap">
+      <span class="eyebrow">Canva template</span>
+      <div class="tpl-grid">
+        <div>
+          <h2 class="reveal">Дизайнер шиг постерийг өөрөө хий</h2>
+          <p class="section-intro reveal" style="margin-bottom:28px;">Вэб хийхээс гадна контент ч хэрэгтэй. Мэргэжлийн дизайнераар хийлгэсэн, монгол хэлэнд зориулсан бэлэн Canva загвар дээр нэр, үнэ, зургаа солиход л таны пост, стори бэлэн.</p>
+          <ul class="tpl-packs reveal">
+            <li>Өдөр тутам<b>18</b></li>
+            <li>Black Friday<b>18</b></li>
+            <li>Content Creator<b>18</b></li>
+            <li>Шинэ жил<b>48</b></li>
+            <li>Апп Стайл пост<b>20</b></li>
+            <li>Апп Стайл стори<b>10</b></li>
+          </ul>
+          <ul class="tpl-points reveal">
+            <li>Canva-гийн үнэгүй эрхээр засна</li>
+            <li>QPay-аар төлөөд линкээ шууд авна</li>
+            <li>Пост 1080×1350 · Стори 1080×1920</li>
+          </ul>
+          <div class="tpl-cta reveal">
+            <a class="btn btn-gold" href="https://templates.surlaa.today" target="_blank" rel="noopener">Загваруудыг үзэх →</a>
+            <span class="price"><b>29,000₮</b>/ багц</span>
+          </div>
+        </div>
+        <div class="tpl-shots reveal" aria-hidden="true">
+          <img src="https://templates.surlaa.today/img/od-p02.webp" alt="" loading="lazy">
+          <img src="https://templates.surlaa.today/img/bf-p01.webp" alt="" loading="lazy">
+          <img src="https://templates.surlaa.today/img/n03-1.webp" alt="" loading="lazy">
+          <img src="https://templates.surlaa.today/img/cc-p01.webp" alt="" loading="lazy">
+          <img src="https://templates.surlaa.today/img/p01.webp" alt="" loading="lazy">
+          <img src="https://templates.surlaa.today/img/od-p12.webp" alt="" loading="lazy">
         </div>
       </div>
     </div>
